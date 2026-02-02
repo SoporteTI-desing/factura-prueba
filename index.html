@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Facturador CFDI 4.0 - SAE</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>Facturador CFDI 4.0</h1>
+      <span class="subtitle">Clientes · Productos · Compras · Facturación</span>
+    </div>
+    <div class="empresa-switch">
+      <span>Empresa:</span>
+      <button type="button" class="empresa-btn active" data-empresa="sanare">Sanaré</button>
+      <button type="button" class="empresa-btn" data-empresa="nomad">Nomad</button>
+    </div>
+  </header>
+
+  <nav class="top-nav">
+    <button data-section="clientes" class="nav-btn active">Clientes</button>
+    <button data-section="productos" class="nav-btn">Productos</button>
+    <button data-section="compras" class="nav-btn">Compras</button>
+    <button data-section="facturacion" class="nav-btn">Facturación</button>
+    <button data-section="pagos" class="nav-btn">Histórico de facturación</button>
+</nav>
+
+  <main>
+    <!-- =================== CLIENTES =================== -->
+    <section id="sec-clientes" class="section visible">
+      <h2>Clientes</h2>
+      <div class="grid-2">
+        <form id="form-cliente" class="card">
+          <h3>Nuevo / editar cliente</h3>
+
+          <label>
+            Nombre / Razón social
+            <input type="text" id="cli-nombre" required />
+          </label>
+
+          <label>
+            RFC
+            <input type="text" id="cli-rfc" maxlength="13" required />
+          </label>
+
+          <label>
+            Régimen fiscal (SAT)
+            <select id="cli-regimen" required>
+              <option value="">Cargando catálogos SAT...</option>
+            </select>
+          </label>
+
+          <label>
+            Uso de CFDI (SAT)
+            <select id="cli-uso-cfdi" required>
+              <option value="">Cargando catálogos SAT...</option>
+            </select>
+          </label>
+
+          <label>
+            Código postal
+            <input type="text" id="cli-cp" maxlength="5" required />
+          </label>
+
+          <label>
+            Dirección completa
+            <textarea id="cli-direccion" rows="3"></textarea>
+          </label>
+
+          <label>
+            Email
+            <input type="email" id="cli-email" />
+          </label>
+
+          <label>
+            Teléfono
+            <input type="tel" id="cli-telefono" />
+          </label>
+
+          <div class="form-actions">
+            <button type="submit">Guardar cliente</button>
+            <button type="button" id="btn-cli-limpiar">Limpiar</button>
+          </div>
+        </form>
+
+        <div class="card">
+          <h3>Listado de clientes</h3>
+          <table class="table" id="tabla-clientes">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>RFC</th>
+                <th>Régimen</th>
+                <th>Uso CFDI</th>
+                <th>CP</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- lleno desde JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== PRODUCTOS =================== -->
+    <section id="sec-productos" class="section">
+      <h2>Productos / Servicios</h2>
+      <div class="grid-2">
+        <form id="form-producto" class="card">
+          <h3>Nuevo / editar producto</h3>
+
+          <label>
+            Descripción
+            <input type="text" id="prd-descripcion" required />
+          </label>
+
+          <label>
+            ClaveProdServ (SAT)
+            <input list="lista-clave-prodserv"
+                   id="prd-clave-prodserv"
+                   placeholder="Ej. 85121800 - Servicios médicos" />
+            <datalist id="lista-clave-prodserv"></datalist>
+          </label>
+
+          <label>
+            ClaveUnidad (SAT)
+            <input list="lista-clave-unidad"
+                   id="prd-clave-unidad"
+                   placeholder="Ej. E48 - Unidad de servicio" />
+            <datalist id="lista-clave-unidad"></datalist>
+          </label>
+
+          <label>
+            Unidad (texto en factura)
+            <input type="text" id="prd-unidad" placeholder="pz, servicio, etc." />
+          </label>
+
+          <label>
+            Precio unitario (sin IVA)
+            <input type="number" step="0.000001" min="0" id="prd-precio" required />
+          </label>
+
+          <label class="inline">
+            <input type="checkbox" id="prd-grava-iva" checked />
+            Aplica IVA 16%
+          </label>
+
+          <div class="form-actions">
+            <button type="submit">Guardar producto</button>
+            <button type="button" id="btn-prd-limpiar">Limpiar</button>
+          </div>
+        </form>
+
+        <div class="card">
+          <h3>Catálogo de productos</h3>
+          <table class="table" id="tabla-productos">
+            <thead>
+              <tr>
+                <th>Descripción</th>
+                <th>ClaveProdServ</th>
+                <th>ClaveUnidad</th>
+                <th>Unidad</th>
+                <th>Precio</th>
+                <th>IVA</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- lleno desde JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    
+    <!-- =================== COMPRAS =================== -->
+    <section id="sec-compras" class="section">
+      <h2>Compras</h2>
+      <div class="card compras-sa">
+        <div class="compras-sa-header">
+          <label>
+            Compra
+            <select id="comp-tipo">
+              <option value="Directa">Directa</option>
+              <option value="Orden de compra">Orden de compra</option>
+              <option value="Consignación">Consignación</option>
+            </select>
+          </label>
+          <label>
+            Número
+            <input type="text" id="comp-numero" readonly />
+          </label>
+          <label>
+            Fecha
+            <input type="date" id="comp-fecha" />
+          </label>
+          <label>
+            Proveedor
+            <input type="text" id="comp-proveedor" />
+          </label>
+
+          <label>
+            RFC
+            <input type="text" id="comp-rfc" />
+          </label>
+          <label>
+            Nombre
+            <input type="text" id="comp-nombre" />
+          </label>
+          <label>
+            Ref. Prov.
+            <input type="text" id="comp-ref-prov" />
+          </label>
+          <label>
+            Esquema
+            <input type="text" id="comp-esquema" />
+          </label>
+
+          <label>
+            Calle
+            <input type="text" id="comp-calle" />
+          </label>
+          <label>
+            Núm. ext.
+            <input type="text" id="comp-num-ext" />
+          </label>
+          <label>
+            Núm. int.
+            <input type="text" id="comp-num-int" />
+          </label>
+          <label>
+            Colonia
+            <input type="text" id="comp-colonia" />
+          </label>
+
+          <label>
+            Código postal
+            <input type="text" id="comp-cp" />
+          </label>
+          <label>
+            Población
+            <input type="text" id="comp-poblacion" />
+          </label>
+          <label>
+            País
+            <input type="text" id="comp-pais" />
+          </label>
+          <label>
+            Entregar a
+            <input type="text" id="comp-entregar-a" />
+          </label>
+
+          <label>
+            Fecha rec.
+            <input type="date" id="comp-fecha-rec" />
+          </label>
+          <label>
+            Descuento
+            <input type="number" id="comp-descuento" step="0.01" />
+          </label>
+          <label>
+            Desc. fin.
+            <input type="number" id="comp-desc-fin" step="0.01" />
+          </label>
+          <label>
+            Gastos ind.
+            <input type="number" id="comp-gastos-ind" step="0.01" />
+          </label>
+
+          <label>
+            Almacén
+            <input type="text" id="comp-almacen" />
+          </label>
+        </div>
+
+        <div class="compras-detalle">
+          <table class="table compras-detalle-table">
+            <thead>
+              <tr>
+                <th>Cant.</th>
+                <th>Producto</th>
+                <th>Unidad</th>
+                <th>Descuento</th>
+                <th>I.E.P.S.</th>
+                <th>Coaseguro</th>
+                <th>Deducible</th>
+                <th>I.V.A.</th>
+                <th>Costo por unidad</th>
+                <th>Subtotal por partida</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="compras-detalle-body">
+            </tbody>
+          </table>
+          <button type="button" id="btn-agregar-partida" class="btn-secundario">
+            Agregar partida
+          </button>
+        </div>
+
+        <div class="compras-footer">
+          <label class="descripcion-field">
+            Descripción
+            <input type="text" id="comp-descripcion" />
+          </label>
+          <label>
+            Fact./unidades
+            <input type="text" id="comp-fact-unidades" />
+          </label>
+          <label>
+            Total por partida
+            <input type="text" id="comp-total-partida" readonly />
+          </label>
+        </div>
+
+        <div class="compras-actions">
+          <button type="button" id="btn-nueva-compra">Nueva compra</button>
+          <button type="button" id="btn-guardar-compra">Guardar compra</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Historial de compras</h3>
+        <table class="table" id="tabla-compras">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Proveedor</th>
+              <th>Concepto</th>
+              <th>Importe total</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+<!-- =================== FACTURACIÓN =================== -->
+    <section id="sec-facturacion" class="section">
+      <h2>Facturación CFDI 4.0</h2>
+
+      <div class="card">
+        <h3>Datos generales</h3>
+        <div class="grid-3">
+          <label>
+            Cliente
+            <select id="fac-cliente"></select>
+          </label>
+
+          <label>
+            Serie
+            <input type="text" id="fac-serie" value="FN" />
+          </label>
+
+          <label>
+            Folio
+            <input type="number" id="fac-folio" min="1" />
+          </label>
+
+          <label>
+            Forma de pago
+            <select id="fac-forma-pago"></select>
+          </label>
+
+          <label>
+            Método de pago
+            <select id="fac-metodo-pago"></select>
+          </label>
+
+          <label>
+            Moneda
+            <input type="text" id="fac-moneda" value="MXN" />
+          </label>
+
+          <label>
+            Lugar de expedición (CP)
+            <input type="text" id="fac-lugar-exp" value="03020" />
+          </label>
+
+          <label>
+            Tipo de comprobante
+            <select id="fac-tipo-comp"></select>
+          </label>
+
+          <label>
+            Fecha / hora (se toma la del sistema)
+            <input type="text" id="fac-fecha" readonly />
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Conceptos</h3>
+        <table class="table conceptos">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Clave</th>
+              <th>Descripción</th>
+              <th>Cant.</th>
+              <th>ClaveProdServ</th>
+              <th>ClaveUnidad</th>
+              <th>Unidad</th>
+              <th>V. unitario</th>
+              <th>Importe</th>
+              <th>Coaseguro</th>
+              <th>Deducible</th>
+              <th>Desc. %</th>
+              <th>IVA</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="fac-conceptos-body">
+            <!-- filas dinámicas -->
+          </tbody>
+        </table>
+        <button type="button" id="btn-agregar-concepto">Agregar concepto</button>
+      </div>
+
+      <div class="card">
+        <label>
+          Notas para el PDF
+          <textarea id="fac-notas" rows="3" placeholder="Escribe aquí las notas que aparecerán en la vista de impresión"></textarea>
+        </label>
+      </div>
+
+      <div class="card totales">
+        <div class="totales-valores">
+          <div>
+            <span>Subtotal:</span>
+            <strong id="fac-subtotal">0.00</strong>
+          </div>
+          <div>
+            <span>Descuento:</span>
+            <strong id="fac-descuento">0.00</strong>
+          </div>
+          <div>
+            <span>IVA 16%:</span>
+            <strong id="fac-iva">0.00</strong>
+          </div>
+          <div>
+            <span>Total:</span>
+            <strong id="fac-total">0.00</strong>
+          </div>
+          <div>
+            <span>Total coaseguro:</span>
+            <strong id="fac-coaseguro-total">0.00</strong>
+          </div>
+          <div>
+            <span>Total deducible:</span>
+            <strong id="fac-deducible-total">0.00</strong>
+          </div>
+          <div>
+            <span>Total paciente:</span>
+            <strong id="fac-total-ajustado">0.00</strong>
+          </div>
+        </div>
+        <div class="totales-actions">
+          <button type="button" id="btn-generar-xml">Generar XML CFDI</button>
+          <button type="button" id="btn-ver-impresion">Vista impresión / PDF</button>
+          <button type="button" id="btn-firmar-timbrar" class="primary">Firmar y timbrar (backend)</button>
+          <button type="button" id="btn-cancelar-ultima-factura" class="danger">Cancelar última factura</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>XML generado</h3>
+          <textarea id="xml-output" rows="18" readonly></textarea>
+          <p class="help">
+            Este XML es una maqueta CFDI 4.0 (sin timbre).  
+            Debes enviarlo a tu PAC / sistema de timbrado.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Vista previa de impresión</h3>
+          <div id="preview-impresion" class="preview-impresion">
+            <!-- aquí se inyecta el HTML tipo PDF -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- =================== PAGOS =================== -->
+    <section id="sec-pagos" class="section">
+      <h2>Histórico de facturación</h2>
+      <p class="help">
+        Usa este módulo cuando la factura se emitió con método de pago <strong>PPD</strong>.
+        Para facturas <strong>PUE</strong> el comprobante de pago no es obligatorio.
+      </p>
+      <div class="card" id="card-historico-facturas">
+        <h3>Histórico de facturación</h3>
+        <p class="help">Aquí verás todas las facturas generadas. En facturas con <strong>PPD</strong> podrás habilitar el complemento de pago.</p>
+        <div class="table-wrap">
+          <table class="tbl" id="tbl-historico-facturas">
+            <thead>
+              <tr>
+                <th>Serie/Folio</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Método</th>
+                <th>Estatus</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+
+      <div class="grid-2">
+        <form id="form-pago" class="card hidden">
+          <h3>Nuevo comprobante de pago</h3>
+
+          <div class="grid-2">
+            <label>
+              Cliente
+              <select id="pag-cliente"></select>
+            </label>
+
+            <label>
+              Fecha de pago
+              <input type="date" id="pag-fecha" />
+            </label>
+
+            <label>
+              Serie
+              <input type="text" id="pag-serie" value="CP" />
+            </label>
+
+            <label>
+              Folio
+              <input type="number" id="pag-folio" min="1" />
+            </label>
+
+            <label>
+              Forma de pago
+              <select id="pag-forma-pago"></select>
+            </label>
+
+            <label>
+              Monto pagado
+              <input type="number" step="0.01" id="pag-monto" />
+            </label>
+          </div>
+
+          <label>
+            Facturas relacionadas (folios/UUID, separadas por coma)
+            <textarea id="pag-facturas" rows="2"></textarea>
+          </label>
+
+          <label>
+            Notas internas
+            <textarea id="pag-notas" rows="2"></textarea>
+          </label>
+
+          <div class="totales-actions">
+            <button type="submit" id="btn-pago-guardar">Guardar pago / generar JSON</button>
+            <button type="button" id="btn-pago-limpiar">Limpiar</button>
+          </div>
+
+          <label>
+            JSON del comprobante (maqueta)
+            <textarea id="pag-json" rows="8" readonly></textarea>
+          </label>
+        </form>
+
+        <div class="card">
+          <h3>Historial de pagos</h3>
+          <table class="table" id="tabla-pagos">
+            <thead>
+              <tr>
+                <th>Folio</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Monto</th>
+                <th>Facturas</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    </main>
+
+  <!-- Área exclusiva para impresión -->
+  <div id="print-area" class="print-area"></div>
+
+<!-- Listas sugeridas para Coaseguro y Deducible -->
+<datalist id="lista-coaseguro">
+  <option value="0"></option>
+  <option value="10"></option>
+  <option value="20"></option>
+  <option value="30"></option>
+  <option value="50"></option>
+</datalist>
+
+<datalist id="lista-deducible">
+  <option value="0"></option>
+  <option value="1000"></option>
+  <option value="2000"></option>
+  <option value="5000"></option>
+</datalist>
+
+  <script src="app.js"></script>
+
+  <!-- =================== MODAL CANCELACIÓN SAT =================== -->
+  <div class="modal hidden" id="modal-cancelar">
+    <div class="modal-content">
+      <h3>Cancelar factura (SAT)</h3>
+      <p class="help">Selecciona el motivo de cancelación. Si eliges <strong>01</strong>, se solicita el UUID que sustituye.</p>
+
+      <div class="grid-2">
+        <label>
+          Motivo de cancelación
+          <select id="cancel-motivo">
+            <option value="02">02 - Comprobantes emitidos con errores sin relación</option>
+            <option value="01">01 - Comprobantes emitidos con errores con relación</option>
+            <option value="03">03 - No se llevó a cabo la operación</option>
+            <option value="04">04 - Operación nominativa relacionada en una factura global</option>
+          </select>
+        </label>
+
+        <label id="cancel-uuid-wrap" class="hidden">
+          UUID que sustituye (solo motivo 01)
+          <input type="text" id="cancel-uuid" placeholder="UUID de sustitución" />
+        </label>
+      </div>
+
+      <label>
+        Observaciones (opcional)
+        <textarea id="cancel-obs" rows="2"></textarea>
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn danger" id="btn-confirmar-cancelacion">Cancelar factura</button>
+        <button type="button" class="btn" id="btn-cerrar-cancelacion">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

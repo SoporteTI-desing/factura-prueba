@@ -1,0 +1,490 @@
+* {
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.app-header {
+  background: #111827;
+  color: #fff;
+  padding: 12px 24px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.app-header .subtitle {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.top-nav {
+  background: #1f2937;
+  padding: 4px 16px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.nav-btn.active {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+main {
+  padding: 16px;
+}
+
+.section {
+  display: none;
+}
+
+.section.visible {
+  display: block;
+}
+
+.card {
+  background: #fff;
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  margin-bottom: 16px;
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 12px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+  margin-bottom: 8px;
+  gap: 4px;
+}
+
+label.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+textarea,
+select {
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.form-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  cursor: pointer;
+}
+
+button[type="submit"],
+button[type="button"] {
+  border-radius: 4px;
+  border: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  background: #2563eb;
+  color: #fff;
+}
+
+button[type="button"] {
+  background: #6b7280;
+}
+
+button#btn-agregar-concepto {
+  margin-top: 8px;
+  background: #059669;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #e5e7eb;
+  padding: 4px 6px;
+  text-align: left;
+}
+
+.table th {
+  background: #f9fafb;
+}
+
+.table td.actions {
+  white-space: nowrap;
+}
+
+.table td.actions button {
+  background: #ef4444;
+  padding: 3px 8px;
+  font-size: 12px;
+}
+
+.conceptos input,
+.conceptos select {
+  width: 100%;
+}
+
+.totales {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.totales-valores > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.totales-valores strong {
+  min-width: 90px;
+  text-align: right;
+}
+
+.totales-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.totales-actions button {
+  width: 210px;
+}
+
+#xml-output {
+  width: 100%;
+  font-family: "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 11px;
+}
+
+.preview-impresion {
+  background: #f9fafb;
+  border: 1px dashed #d1d5db;
+  min-height: 260px;
+  padding: 8px;
+  font-size: 12px;
+}
+
+/* ================== ÁREA DE IMPRESIÓN ================== */
+
+.print-area {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-area,
+  #print-area * {
+    visibility: visible;
+  }
+  #print-area {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+/* Estilo tipo PDF para la factura impresa */
+.factura-pdf {
+  font-size: 12px;
+  padding: 16px;
+  font-family: "Arial", sans-serif;
+}
+
+.factura-pdf-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.factura-pdf-header .emisor,
+.factura-pdf-header .receptor {
+  box-sizing: border-box;
+}
+
+.factura-pdf-header .emisor {
+  flex: 0 0 auto;
+}
+
+.factura-pdf-header-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.factura-pdf-header-bottom .factura-pdf-comprobante {
+  flex: 0 0 60%;
+}
+
+.factura-pdf-header-bottom .receptor {
+  flex: 0 0 38%;
+}
+
+.factura-pdf-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+}
+
+.factura-pdf-datos {
+  margin-top: 4px;
+  font-size: 10px;
+}
+
+.factura-pdf-table {
+  margin-top: 8px;
+}
+
+.factura-pdf-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.factura-pdf-table th,
+.factura-pdf-table td {
+  border: 1px solid #000;
+  padding: 2px 3px;
+}
+
+.factura-pdf-totales {
+  margin-top: 8px;
+  text-align: right;
+  font-size: 11px;
+}
+
+.factura-pdf-sellos {
+  margin-top: 10px;
+  font-size: 9px;
+  word-break: break-all;
+}
+
+.help {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ================== RESPONSIVE ================== */
+
+@media (max-width: 960px) {
+  main {
+    padding: 8px;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .grid-2,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 12px;
+  }
+
+  .totales {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .totales-actions button {
+    width: 100%;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 12px;
+  }
+}
+
+
+.empresa-switch {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.empresa-switch .empresa-btn {
+  border: none;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #374151;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.empresa-switch .empresa-btn.active {
+  background: #fbbf24;
+  color: #111827;
+}
+
+/* COMPRAS estilo SAE */
+.compras-sa {
+  background: #e5ecf5;
+  border: 1px solid #cbd5e1;
+}
+
+.compras-sa-header {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.compras-sa-header label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compras-sa-header input,
+.compras-sa-header select {
+  width: 100%;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.compras-detalle-table th,
+.compras-detalle-table td {
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+.compras-detalle-table input {
+  width: 100%;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.compras-footer {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.compras-footer label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.compras-footer input {
+  width: 100%;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+
+.compras-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.btn-secundario {
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.compras-total-sub {
+  text-align: right;
+}
+
+
+/* === Ajuste impresión: solo imprimir #print-area en una sola hoja === */
+@media print {
+  body {
+    margin: 0;
+  }
+  body > * {
+    display: none !important;
+  }
+  #print-area {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+  }
+}
+
+.factura-pdf-header .emisor img {
+  display: block;
+}
